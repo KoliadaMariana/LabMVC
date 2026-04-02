@@ -1,0 +1,19 @@
+@model IEnumerable<MvcMovie.Models.Movie>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-controller="Movies" asp-action="Index">
+    <p>
+        <label>Title: <input type="text" name="SearchString" /></label>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<table class="table">
