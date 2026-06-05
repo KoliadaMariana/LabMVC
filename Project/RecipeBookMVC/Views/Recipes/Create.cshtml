@@ -1,0 +1,90 @@
+@model RecipeBookMVC.Models.Recipe
+
+@{
+    ViewData["Title"] = "Dodaj Nowy Przepis";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="p-4 text-white text-center" style="background-color: #1E110A;">
+                    <h2 class="fw-bold mb-0">Dodaj swój przepis</h2>
+                </div>
+
+                <div class="card-body p-5" style="background-color: #FAF6F0;">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label asp-for="Name" class="form-label fw-bold text-dark">Nazwa potrawy</label>
+                                <input asp-for="Name" class="form-control border-0 shadow-sm"
+                                       style="border-radius: 10px;" placeholder="np. Pieczony Łosoś" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="CategoryId" class="form-label fw-bold text-dark">Kategoria</label>
+                                <select asp-for="CategoryId" class="form-select border-0 shadow-sm"
+                                        style="border-radius: 10px;" asp-items="ViewBag.CategoryId">
+                                    <option value="">-- Wybierz kategorię --</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="ImageUrl" class="form-label fw-bold text-dark">Link do zdjęcia
+                                    (URL)</label>
+                                    <input asp-for="ImageUrl" class="form-control border-0 shadow-sm"
+                                           style="border-radius: 10px;" placeholder="https://..." />
+                                    <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="CookingTime" class="form-label fw-bold text-dark">Czas przygotowania
+                                        (min)</label>
+                                        <input asp-for="CookingTime" class="form-control border-0 shadow-sm"
+                                               style="border-radius: 10px;" type="number" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="Difficulty" class="form-label fw-bold text-dark">Poziom
+                                            trudności</label>
+                                            <select asp-for="Difficulty" class="form-select border-0 shadow-sm"
+                                                    style="border-radius: 10px;">
+                                                <option value="Łatwe">Łatwe</option>
+                                                <option value="Średnie">Średnie</option>
+                                                <option value="Trudne">Trudne</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label asp-for="Ingredients" class="form-label fw-bold text-dark">Składniki (oddziel
+                                                przecinkami)</label>
+                                                <textarea asp-for="Ingredients" class="form-control border-0 shadow-sm"
+                                                          style="border-radius: 10px;" rows="3"
+                                                          placeholder="ryba, cytryna, sól..."></textarea>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <label asp-for="Instructions" class="form-label fw-bold text-dark">Instrukcja krok po
+                                                    kroku</label>
+                                                    <textarea asp-for="Instructions" class="form-control border-0 shadow-sm"
+                                                              style="border-radius: 10px;" rows="5"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-5 d-flex gap-3">
+                                                <button type="submit" class="btn btn-lg text-white w-100 fw-bold shadow-sm"
+                                                        style="background-color: #E28743; border-radius: 12px;">
+                                                    Dodaj przepis
+                                                </button>
+                                                <a asp-action="Index" class="btn btn-lg btn-outline-dark px-4"
+                                                   style="border-radius: 12px;">Anuluj</a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>

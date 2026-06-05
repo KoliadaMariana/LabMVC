@@ -1,0 +1,82 @@
+/* 1. Глобальні кольори проекту Smakolyk */
+:root {
+    --chocolate-dark: #3E2723;   /* Темний шоколад для набару */
+    --cream-bg: #FDF8F1;        /* Світлий крем для фону всього сайту */
+    --accent-orange: #D29062;   /* Помаранчевий для кнопок Premium */
+    --forest-green: #2D6A4F;    /* Зелений для кнопки "Dodaj Nowy Przepis" */
+    --border-color: #E3D5C8;    /* Колір ліній та рамок */
+}
+
+/* 2. Фон сторінки */
+body {
+    background-color: var(--cream-bg) !important;
+    color: var(--chocolate-dark);
+}
+
+/* 3. Навігаційна панель (Header) */
+.navbar {
+    background-color: var(--chocolate-dark) !important;
+    border-bottom: 2px solid var(--accent-orange);
+}
+
+.navbar .nav-link, .navbar-brand {
+    color: white !important;
+}
+
+/* 4. Панель пошуку та фільтрації (Index) */
+/* Робимо її в колір сайту, щоб вона не була сірою */
+.card.bg-light {
+    background-color: #F9F3EB !important; 
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px;
+}
+
+/* 5. Кнопки - ВИПРАВЛЯЄМО СИНІЙ НА ШОКОЛАДНИЙ */
+.btn-primary {
+    background-color: var(--chocolate-dark) !important;
+    border-color: var(--chocolate-dark) !important;
+    color: white !important;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #2D1B18 !important; /* Ще темніший при наведенні */
+}
+
+/* Кнопка "Reset" */
+.btn-outline-secondary {
+    border-color: var(--chocolate-dark) !important;
+    color: var(--chocolate-dark) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--chocolate-dark) !important;
+    color: white !important;
+}
+
+/* Кнопка "Dodaj Nowy Przepis" */
+.btn-success {
+    background-color: var(--forest-green) !important;
+    border: none !important;
+    padding: 10px 20px;
+}
+
+/* Кнопка Premium */
+.btn-premium {
+    background-color: var(--accent-orange) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 20px;
+}
+
+/* 6. Картки рецептів */
+.card {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 4px 10px rgba(62, 39, 35, 0.05);
+}
+
+.card-title {
+    color: var(--chocolate-dark);
+    font-weight: bold;
+}

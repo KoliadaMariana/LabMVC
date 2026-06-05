@@ -1,0 +1,37 @@
+@using Microsoft.AspNetCore.Identity
+@using RecipeBookMVC.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var name = user?.FirstName ?? "Mariana";
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white fw-semibold px-3" href="#" id="userDropdown" role="button"
+               data-bs-toggle="dropdown" aria-expanded="false">
+                Cześć, @name!
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="userDropdown"
+                style="background-color: #FDF8F1; border-radius: 10px;">
+                <li>
+                    <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit"
+                                class="dropdown-item text-danger py-2 border-0 bg-transparent w-100 text-start">Wyloguj</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="btn text-dark fw-bold px-4 shadow-sm" asp-controller="Account" asp-action="Login"
+               style="background-color: #FAF6F0; color: #1E110A !important; border-radius: 10px; border: none; font-size: 0.95rem; padding: 6px 20px; display: inline-block;">
+                Zaloguj się
+            </a>
+        </li>
+    }
+</ul>

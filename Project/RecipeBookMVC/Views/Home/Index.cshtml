@@ -1,0 +1,166 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using RecipeBookMVC.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Strona Główna";
+
+    // Безпечно отримуємо користувача
+    ApplicationUser? user = null;
+    if (SignInManager.IsSignedIn(User))
+    {
+        user = await UserManager.GetUserAsync(User);
+    }
+
+    // Якщо користувач null, premium за замовчуванням false
+    bool isPremium = user?.EmailConfirmed ?? false;
+    // Безпечне ім'я для відображення
+    string displayName = user?.FirstName ?? user?.UserName ?? "Szefie";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            @* Головний банер *@
+            <div class="position-relative overflow-hidden rounded-5 shadow-lg text-white" style="background: linear-gradient(rgba(30, 17, 10, 0.85), rgba(60, 42, 33, 0.85)), 
+                url('https://images.unsplash.com/photo-1543353071-873f17a7a088?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); 
+                background-size: cover; background-position: center; border: 2px solid #D4A373;">
+
+                <div class="p-5 text-center my-4">
+                    @if (isPremium)
+                    {
+                        <div class="mb-3">
+                            <span class="badge px-3 py-2 shadow-sm"
+                                  style="background-color: #E28743; color: #1E110A; border-radius: 50px;">
+                                <i class="bi bi-crown-fill me-2"></i>Członek Premium
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="text-uppercase mb-3 d-block fw-bold tracking-widest"
+                              style="color: #D4A373; font-size: 0.8rem; letter-spacing: 3px;">
+                            Twoja Cyfrowa Kuchnia
+                        </span>
+                    }
+
+                    <h1 class="display-3 fw-bold mb-4" style="font-family: 'Playfair Display', serif;">Smakolyk</h1>
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <p class="lead mb-5" style="font-size: 1.25rem; color: #FAF6F0; line-height: 1.6;">
+                                @if (user == null)
+                                {
+                                    <span>Przeglądaj setki przepisów za darmo. <br> <strong>Zarejestruj się</strong>, aby
+                                        móc dodawać własne i odblokować Asystenta Lodówki!</span>
+                                    }
+                                else
+                                    {
+                                        <span>Witaj z powrotem, <strong>@displayName</strong>! Gotowa na nowe kulinarne
+                                            odkrycia? Twoja książka kucharska czeka.</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                                @if (user != null)
+                                {
+                                    <a asp-controller="Recipes" asp-action="Index" class="btn btn-lg px-5 py-3 fw-bold shadow-lg"
+                                       style="background-color: #E28743; color: #1E110A; border-radius: 12px; border: none; font-size: 1.2rem;">
+                                        Przejdź do przepisów <i class="bi bi-book-half ms-2"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Account" asp-action="Login" class="btn btn-lg px-5 py-3 fw-bold shadow-lg"
+                                       style="background-color: #E28743; color: #1E110A; border-radius: 12px; border: none; font-size: 1.2rem;">
+                                        Zaloguj się <i class="bi bi-box-arrow-in-right ms-2"></i>
+                                    </a>
+
+                                    <a asp-controller="Account" asp-action="Register" class="btn btn-lg px-5 py-3 fw-bold border-2"
+                                       style="color: #FAF6F0; border-color: #FAF6F0; border-radius: 12px; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
+                                        Zarejestruj się
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Панель фільтрації *@
+                    <div class="mt-5 p-4 rounded-4 shadow-sm" style="background-color: #F9F3EB; border: 1px solid #E3D5C8;">
+                        <h4 class="mb-4 fw-bold" style="color: #3E2723;">🔍 Znajdź idealny przepis</h4>
+                        <form asp-controller="Home" asp-action="Index" method="get" class="row g-3">
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold" style="color: #3E2723;">Nazwa dania</label>
+                                <input type="text" name="searchString" class="form-control border-0 shadow-sm"
+                                       style="border-radius: 8px; padding: 10px;" placeholder="np. Kurczak, Brownie..." />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold" style="color: #3E2723;">Kategoria</label>
+                                <select name="category" class="form-select border-0 shadow-sm"
+                                        style="border-radius: 8px; padding: 10px;">
+                                    <option value="">Wszystkie kategorie</option>
+                                    @if (ViewData["Categories"] != null)
+                                    {
+                                        @foreach (var cat in (List<string>)ViewData["Categories"]!)
+                                        {
+                                            <option value="@cat">@cat</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-3 d-flex align-items-end gap-2">
+                                <button type="submit" class="btn fw-bold w-100 shadow-sm"
+                                        style="background-color: #3E2723; color: white; border-radius: 8px; padding: 10px;">
+                                    Filtruj
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-dark shadow-sm"
+                                   style="border-radius: 8px; padding: 10px; border-color: #3E2723; color: #3E2723;">
+                                    Reset
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                    @* Картки переваг *@
+                    <div class="row mt-5 g-4 text-center">
+                        <div class="col-md-4">
+                            <div class="p-4 rounded-4 bg-white shadow-sm h-100" style="border-bottom: 4px solid #E28743;">
+                                <i class="bi bi-search fs-1 mb-3 d-block" style="color: #3C2A21;"></i>
+                                <h5 class="fw-bold" style="color: #3C2A21;">Odkrywaj</h5>
+                                <p class="text-muted small">Dostępne dla każdego. Przeglądaj przepisy z całego świata bez
+                                    logowania.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-4 rounded-4 bg-white shadow-sm h-100" style="border-bottom: 4px solid #3C2A21;">
+                                    <i class="bi bi-pencil-square fs-1 mb-3 d-block" style="color: #3C2A21;"></i>
+                                    <h5 class="fw-bold" style="color: #3C2A21;">Twórz</h5>
+                                    <p class="text-muted small">Tylko dla zalogowanych. Dodawaj własne receptury i twórz prywatną
+                                        bibliotekę.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-4 rounded-4 bg-white shadow-sm h-100" style="border-bottom: 4px solid #D4A373;">
+                                        <i class="bi bi-magic fs-1 mb-3 d-block" style="color: #E28743;"></i>
+                                        <h5 class="fw-bold" style="color: #3C2A21;">Inteligencja</h5>
+                                        <p class="text-muted small">Funkcja Premium. Szukaj dań na podstawie tego, co aktualnie masz w
+                                            lodówce.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+                        .btn:hover {
+                            transform: translateY(-2px);
+                            transition: all 0.2s ease-in-out;
+                        }
+                    </style>

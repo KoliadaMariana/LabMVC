@@ -1,0 +1,42 @@
+@model RecipeBookMVC.Models.Recipe
+
+<div class="container mt-4">
+
+    <h2>Edit Recipe</h2>
+
+    <form asp-action="Edit">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Ingredients</label>
+            <textarea asp-for="Ingredients" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>Instructions</label>
+            <textarea asp-for="Instructions" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>Cooking Time</label>
+            <input asp-for="CookingTime" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Difficulty</label>
+            <input asp-for="Difficulty" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Save Changes
+        </button>
+
+    </form>
+
+</div>

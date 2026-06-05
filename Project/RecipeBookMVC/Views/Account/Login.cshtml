@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "Logowanie";
+}
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card p-5 shadow-sm border-0"
+         style="background-color: #FAF6F0; border-radius: 20px; max-width: 450px; width: 100%;">
+
+        <h2 class="fw-bold text-center mb-4 text-dark" style="font-family: sans-serif;">Zaloguj się do Smakolyka</h2>
+
+        <form asp-controller="Account" asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger text-center small fw-bold mb-3"
+                     style="border-radius: 10px; border: none; background-color: #f8d7da; color: #842029;"></div>
+            }
+
+            <div class="mb-3 text-start">
+                <label class="form-label text-muted small mb-1"
+                       style="color: #3C2A21 !important; font-weight: bold;">Adres e-mail</label>
+                <input type="email" name="email" class="form-control"
+                       style="border-radius: 10px; border: 1px solid #D4A373; padding: 10px;" required />
+            </div>
+
+            <div class="mb-4 text-start">
+                <label class="form-label text-muted small mb-1"
+                       style="color: #3C2A21 !important; font-weight: bold;">Hasło</label>
+                <input type="password" name="password" class="form-control"
+                       style="border-radius: 10px; border: 1px solid #D4A373; padding: 10px;" required />
+            </div>
+
+            <button type="submit" class="btn w-100 text-white fw-bold py-2.5"
+                    style="background-color: #3C2A21; border-radius: 10px; font-size: 1.05rem;">
+                Zaloguj się
+            </button>
+        </form>
+
+        <hr class="my-4" style="color: #D4A373; opacity: 0.3;">
+
+        <div class="text-center">
+            <span class="text-muted small">Nie masz jeszcze konta?
+                <a asp-controller="Account" asp-action="Register" class="fw-bold style-none"
+                   style="color: #E28743; text-decoration: none;">Zarejestruj się tutaj</a>
+            </span>
+        </div>
+
+    </div>
+</div

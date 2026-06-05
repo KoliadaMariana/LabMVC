@@ -1,0 +1,88 @@
+@{
+    ViewData["Title"] = "Smakolyk Premium";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center mb-4">
+            <span class="badge px-3 py-2 rounded-pill text-white fw-bold" style="background-color: #E28743;">OFERTA
+                SPECJALNA</span>
+                <h1 class="fw-bold mt-2" style="color: #3C2A21;">Wypróbuj Smakolyk Premium</h1>
+                <p class="fs-5" style="color: #5C4033;">Pierwsze 30 dni całkowicie za darmo. Anuluj w dowolnym momencie.</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center g-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100" style="background-color: #FAF6F0; border-radius: 20px;">
+                    <div class="card-body p-5">
+                        <h3 class="fw-bold" style="color: #3C2A21;">Okres próbny: 1 miesiąc</h3>
+                        <div class="display-5 fw-bold my-3" style="color: #E28743;">0.00 PLN <span
+                            class="fs-5 text-muted">przez 30 dni</span></div>
+                            <p class="text-muted small">Po tym okresie tylko 19.99 PLN/miesiąc</p>
+
+                            <hr style="color: #D4A373;">
+
+                            <ul class="list-unstyled my-4" style="color: #5C4033;">
+                                <li class="mb-2"><i class="bi bi-check-lg text-success me-2"></i> Pełny Asystent Inteligentnej
+                                    Lodówki</li>
+                                    <li class="mb-2"><i class="bi bi-check-lg text-success me-2"></i> Dodawanie nielimitowanej
+                                        liczby przepisów</li>
+                                        <li class="mb-2"><i class="bi bi-check-lg text-success me-2"></i> Brak jakichkolwiek reklam na
+                                            stronie</li>
+                                        </ul>
+
+                                        <h5 class="fw-bold mt-4 mb-3" style="color: #3C2A21;">Wybierz metodę płatności do autoryzacji:</h5>
+
+                                        <div class="d-grid gap-2">
+                                            <form asp-controller="Premium" asp-action="ActivatePremium" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit"
+                                                        class="btn btn-light border p-3 d-flex justify-content-between align-items-center w-100 mb-2"
+                                                        style="border-radius: 10px;"
+                                                        onclick="alert('Symulacja: Wybrano BLIK. Wpisz kod w swojej aplikacji bankowej, aby aktywować darmowy miesiąc.')">
+                                                    <span class="fw-bold"><i class="bi bi-phone me-2" style="color: #E28743;"></i> Aktywuj
+                                                        przez BLIK</span>
+                                                        <span class="badge bg-dark text-white">Szybki transfer</span>
+                                                    </button>
+                                                </form>
+
+                                                <form asp-controller="Premium" asp-action="ActivatePremium" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit"
+                                                            class="btn btn-dark p-3 d-flex justify-content-between align-items-center w-100 mb-3"
+                                                            style="border-radius: 10px;"
+                                                            onclick="alert('Symulacja: Zweryfikowano Apple Pay przez TouchID/FaceID. Darmowy miesiąc Premium aktywny!')">
+                                                        <span class="fw-bold"><i class="bi bi-apple me-2"></i> Zapłać z Apple Pay</span>
+                                                        <i class="bi bi-wallet2"></i>
+                                                    </button>
+                                                </form>
+
+                                                <div class="border p-3 rounded-3 bg-white mt-2" style="border-color: #D4A373;">
+                                                    <span class="fw-bold d-block mb-2" style="color: #3C2A21;"><i
+                                                        class="bi bi-credit-card me-2"></i> Karta debetowa/kredytowa</span>
+                                                        <input type="text" class="form-control form-control-sm mb-2"
+                                                               placeholder="Numer karty (0000 0000 0000 0000)">
+                                                        <div class="row g-2">
+                                                            <div class="col-6"><input type="text" class="form-control form-control-sm"
+                                                                                          placeholder="MM/RR"></div>
+                                                                <div class="col-6"><input type="text" class="form-control form-control-sm"
+                                                                                              placeholder="CVC"></div>
+                                                                </div>
+
+                                                                <form asp-controller="Premium" asp-action="ActivatePremium" method="post" class="mt-3">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <button type="submit" class="btn w-100 text-white btn-sm fw-bold"
+                                                                            style="background-color: #3C2A21;"
+                                                                            onclick="alert('Dziękujemy! Karta została zweryfikowana pomyślnie. Witamy w Smakolyk Premium!')">
+                                                                        Rozpocznij darmowy miesiąc
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>

@@ -1,0 +1,93 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using RecipeBookMVC.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    // Перевіряємо, чи користувач увійшов і чи має він Premium статус
+    var currentUser = SignInManager.IsSignedIn(User) ? await UserManager.GetUserAsync(User) : null;
+    bool hasPremium = currentUser != null && currentUser.EmailConfirmed;
+}
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Smakolyk</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body style="background-color: #FDF8F1;">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm shadow-sm mb-3" style="background-color: #3E2723;">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold text-white fs-3" asp-controller="Home" asp-action="Index">SMAKOLYK</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-uppercase small fw-semibold" asp-controller="Home"
+                               asp-action="Index">Główna</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-uppercase small fw-semibold" asp-controller="Recipes"
+                               asp-action="Index">Przepisy</a>
+                        </li>
+
+                        <li class="nav-item">
+                            @if (hasPremium)
+                            {
+                                <a class="nav-link" asp-controller="Fridge" asp-action="Index">Moja lodówka</a>
+                            }
+                            else
+                            {
+                                <a class="nav-link text-white text-uppercase small fw-semibold" asp-controller="Premium"
+                                   asp-action="Index">Moja Lodówka</a>
+                            }
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav gap-3 align-items-center">
+                        <li class="nav-item">
+                            <a class="btn btn-sm px-3 text-white fw-bold"
+                               style="background-color: #E28743; border-radius: 20px; border: none;"
+                               asp-controller="Premium" asp-action="Index">
+                                <i class="bi bi-crown-fill me-1"></i> Premium
+                            </a>
+                        </li>
+                        <partial name="_LoginPartial" />
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted" style="background-color: #F9F3EB;">
+        <div class="container text-center py-3">
+            &copy; 2026 - Smakolyk - <a asp-controller="Home" asp-action="Privacy"
+                                        style="color: #3E2723;">Prywatność</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

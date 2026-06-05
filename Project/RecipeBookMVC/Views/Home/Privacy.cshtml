@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User);
+    bool isPremium = user?.EmailConfirmed ?? false;
+    ViewData["Title"] = "Moja Lodówka";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            @if (isPremium)
+            {
+                <div class="bg-white p-5 rounded-5 shadow-sm text-center border">
+                    <h2 class="fw-bold mb-4">Witaj w Mojej Lodówce!</h2>
+                    <p>Zarządzaj składnikami i otrzymuj spersonalizowane propozycje dań.</p>
+                </div>
+            }
+            else
+            {
+                <div class="p-5 rounded-5 shadow-lg text-white"
+                     style="background: linear-gradient(135deg, #1E110A 0%, #3C2A21 100%); border: 2px solid #D4A373;">
+
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <span class="badge mb-3 px-3 py-2" style="background-color: #E28743; color: #1E110A;">FUNKCJA
+                                PREMIUM</span>
+                                <h2 class="display-5 fw-bold mb-4">Gotuj sprytnie z tym, co już masz</h2>
+                                <p class="lead mb-4 opacity-75">
+                                    Podłącz <strong>Premium</strong>, aby uzyskać dostęp do funkcji inteligentnego skanowania
+                                    lodówki.
+                                    Koniec z marnowaniem jedzenia i codziennym pytaniem "co na obiad?".
+                                </p>
+                                <ul class="list-unstyled mb-5">
+                                    <li class="mb-3"><i class="bi bi-check-circle-fill text-warning me-2"></i> Wyszukiwanie dań
+                                        po Twoich składnikach</li>
+                                        <li class="mb-3"><i class="bi bi-check-circle-fill text-warning me-2"></i> Automatyczne
+                                            listy zakupów</li>
+                                            <li><i class="bi bi-check-circle-fill text-warning me-2"></i> Ekskluzywne przepisy od szefów
+                                                kuchni</li>
+                                            </ul>
+                                            <a asp-controller="Premium" asp-action="Index" class="btn btn-lg px-5 py-3 fw-bold shadow"
+                                               style="background-color: #E28743; color: #1E110A; border-radius: 12px; border: none;">
+                                                Aktywuj dostęp Premium
+                                            </a>
+                                        </div>
+                                        <div class="col-md-5 d-none d-md-block text-center">
+                                            <i class="bi bi-magic" style="font-size: 10rem; color: rgba(226, 135, 67, 0.2);"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>

@@ -1,0 +1,30 @@
+@model RecipeBookMVC.Models.Recipe
+
+@{
+    ViewData["Title"] = "Usuń przepis";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 p-4 text-center" style="background-color: #F9F3EB; border-radius: 15px;">
+                <h2 class="fw-bold mb-3" style="color: #3E2723;">⚠️ Czy na pewno chcesz usunąć ten przepis?</h2>
+                <p class="text-muted mb-4">Tej operacji не można cofnąć. Przepis <strong>@Model.Name</strong> zostanie
+                    trwale usunięty.</p>
+
+                    <div class="d-flex justify-content-center gap-3">
+                        <form asp-action="Delete">
+                            <input type="hidden" asp-for="Id" />
+                            <button type="submit" class="btn btn-danger px-4 py-2 fw-bold" style="border-radius: 10px;">
+                                Tak, usuń przepis
+                            </button>
+                        </form>
+                        <a asp-action="Index" class="btn btn-outline-dark px-4 py-2 fw-bold"
+                           style="border-radius: 10px; border-color: #3E2723; color: #3E2723;">
+                            Anuluj
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
