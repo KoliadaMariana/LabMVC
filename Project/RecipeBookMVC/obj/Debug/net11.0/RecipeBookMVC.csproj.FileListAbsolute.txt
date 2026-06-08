@@ -330,4 +330,4 @@
 /Users/mariana.koliada/LabMVC/Python/LabMVC/Project/RecipeBookMVC/obj/Debug/net11.0/RecipeBookMVC.pdb
 /Users/mariana.koliada/LabMVC/Python/LabMVC/Project/RecipeBookMVC/obj/Debug/net11.0/RecipeBookMVC.genruntimeconfig.cache
 /Users/mariana.koliada/LabMVC/Python/LabMVC/Project/RecipeBookMVC/obj/Debug/net11.0/ref/RecipeBookMVC.dll
-/Users/mariana.koliada/LabMVC/Python/LabMVC/Project/RecipeBookMVC/obj/Debug/net11.0/compressed/ofvlda2n24-{0}-1fsm2pboqc-1fsm2pboqc.gz
+/Users/mariana.koliada/LabMVC/Python/LabMVC/Project/RecipeBookMVC/obj/Debug/net11.0/compressed/ofvlda2n24-{0}-9uh9saws5q-9uh9saws5q.gz

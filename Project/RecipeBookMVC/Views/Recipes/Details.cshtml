@@ -35,27 +35,130 @@
 
         <div class="col-md-7">
             <h1 class="display-4 fw-bold mb-2" style="color: #1E110A; font-family: 'Playfair Display', serif;">
-                @Model.Name</h1>
-                <p class="text-muted mb-4">Autor: <span class="fw-bold text-dark">@(Model.User?.FirstName ?? "Szef Kuchni")</span></p>
+                @Model.Name
+            </h1>
+            <p class="text-muted mb-4">Autor: <span class="fw-bold text-dark">@(Model.User?.FirstName ?? "Szef Kuchni")</span></p>
 
-                <div class="mb-5">
-                    <h3 class="fw-bold mb-3" style="border-left: 4px solid #E28743; padding-left: 15px;">Składniki</h3>
-                    <ul class="list-group list-group-flush">
-                        @foreach (var ingredient in Model.Ingredients.Split(','))
-                        {
-                            <li class="list-group-item bg-transparent border-0 ps-0">
-                                <i class="bi bi-dot text-warning fs-4"></i> @ingredient.Trim()
-                            </li>
-                        }
-                    </ul>
-                </div>
+            <div class="mb-5">
+                <h3 class="fw-bold mb-3" style="border-left: 4px solid #E28743; padding-left: 15px;">Składniki</h3>
+                <ul class="list-group list-group-flush">
+                    @foreach (var ingredient in Model.Ingredients.Split(','))
+                    {
+                        <li class="list-group-item bg-transparent border-0 ps-0">
+                            <i class="bi bi-dot text-warning fs-4"></i> @ingredient.Trim()
+                        </li>
+                    }
+                </ul>
+            </div>
 
-                <div>
-                    <h3 class="fw-bold mb-3" style="border-left: 4px solid #3C2A21; padding-left: 15px;">Przygotowanie</h3>
-                    <div class="lh-lg" style="white-space: pre-line; color: #444; font-size: 1.1rem;">
-                        @Model.Instructions
-                    </div>
+            <div class="mb-5">
+                <h3 class="fw-bold mb-3" style="border-left: 4px solid #3C2A21; padding-left: 15px;">Przygotowanie</h3>
+                <div class="lh-lg" style="white-space: pre-line; color: #444; font-size: 1.1rem;">
+                    @Model.Instructions
                 </div>
             </div>
         </div>
     </div>
+
+    <hr class="my-5" style="border-color: #e1d4c8;" />
+
+    <div class="row g-4">
+        <div class="col-md-5">
+            <div class="p-4 rounded-4 shadow-sm" style="background-color: #fff8f2; border: 1px solid #ebdcd0;">
+                <h4 class="fw-bold mb-3" style="color: #3C2A21;">
+                    <i class="bi bi-pencil-square" style="color: #E28743;"></i> Dodaj swoją opinię
+                </h4>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <form action="/Reviews/Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="RecipeId" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="color: #1E110A;">Ocena potrawy:</label>
+                            <select name="Rating" class="form-select border-2"
+                                    style="border-color: #ebdcd0; border-radius: 10px;">
+                                <option value="5">⭐⭐⭐⭐⭐ (5/5) - Genialne!</option>
+                                <option value="4">⭐⭐⭐⭐ (4/5) - Bardzo smaczne</option>
+                                <option value="3">⭐⭐⭐ (3/5) - Przeciętne</option>
+                                <option value="2">⭐⭐ (2/5) - Do poprawy</option>
+                                <option value="1">⭐ (1/5) - Nie smakowało mi</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="color: #1E110A;">Twoja recenzja:</label>
+                            <textarea name="Content" class="form-control border-2" rows="4"
+                                      placeholder="Napisz kilka słów o tym przepisie..." required
+                                      style="border-color: #ebdcd0; border-radius: 10px;"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn w-100 text-white shadow-sm py-2 fw-bold rounded-3"
+                                style="background-color: #3C2A21;">
+                            <i class="bi bi-send-fill me-1"></i> Wyślij opinię
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <div class="text-center py-4 bg-white rounded-3 border"
+                         style="border-style: dashed !important; border-color: #c3b0a0 !important;">
+                        <i class="bi bi-lock fs-2 text-muted"></i>
+                        <p class="text-muted mt-2 mb-2" style="font-size: 0.95rem;">Tylko zalogowani użytkownicy mogą
+                            dodawać opinie.</p>
+                            <a href="/Identity/Account/Login" class="btn btn-sm text-white px-3"
+                               style="background-color: #E28743; border-radius: 8px;">Zaloguj się</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="p-4 rounded-4 shadow-sm bg-white border" style="border-color: #eee;">
+                    <h4 class="fw-bold mb-3" style="color: #1E110A;">
+                        <i class="bi bi-chat-right-heart-fill" style="color: #E28743;"></i> Opinie użytkowników
+                    </h4>
+
+                    @if (Model.Reviews != null && Model.Reviews.Any())
+                    {
+                        <div style="max-height: 450px; overflow-y: auto; padding-right: 5px;">
+                            @foreach (var review in Model.Reviews)
+                            {
+                                <div class="mb-3 p-3 rounded-4 transition-card"
+                                     style="background-color: #Fdfbf9; border: 1px solid #ebdcd0;">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <span class="badge bg-warning text-dark px-2 py-1 rounded-pill fw-bold">
+                                            @for (int i = 0; i < review.Rating; i++)
+                                            {
+                                                <i class="bi bi-star-fill" style="font-size: 0.75rem;"></i>
+                                            }
+                                            @review.Rating/5
+                                        </span>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar3"></i> @DateTime.Now.ToString("dd.MM.yyyy")
+                                        </small>
+                                    </div>
+                                    <p class="mb-1 mt-2 text-dark lh-base"
+                                       style="font-size: 1rem; font-style: italic; color: #444;">
+                                        "@review.Content"
+                                    </p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-light text-center rounded-4 p-5 mb-0"
+                             style="border: 2px dashed #ebdcd0; background-color: #Fdfbf9;">
+                            <p class="text-muted mb-0"><i class="bi bi-chat-left-text"
+                                                              style="font-size: 2rem; color: #c3b0a0;"></i></p>
+                                <p class="text-muted mt-2 mb-0 fw-medium">Nie ma jeszcze żadnych opinii dla tego przepisu. Bądź
+                                    pierwszy i dodaj recenzję!</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>

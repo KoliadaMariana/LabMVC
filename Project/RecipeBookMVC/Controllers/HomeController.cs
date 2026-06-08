@@ -17,10 +17,15 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        // Витягуємо назви категорій, щоб заповнити випадаючий список (Select) на формі
-        ViewData["Categories"] = await _context.Categories
-            .Select(c => c.Name)
-            .ToListAsync();
+        var categoriesList = await _context.Categories.ToListAsync();
+        var categoryNames = new System.Collections.Generic.List<string>();
+
+        foreach (var c in categoriesList)
+        {
+            categoryNames.Add(c.Name);
+        }
+
+        ViewData["Categories"] = categoryNames;
 
         return View();
     }

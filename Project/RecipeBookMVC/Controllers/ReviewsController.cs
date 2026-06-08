@@ -1,33 +1,32 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RecipeBookMVC.Data; // Додано для підключення контексту
+using RecipeBookMVC.Data;
 using RecipeBookMVC.Models;
 
-namespace RecipeBookMVC.Controllers
+namespace RecipeBookMVC.Controllers;
+
+public class ReviewsController : Controller
 {
-    public class ReviewsController : Controller
+    private readonly AppDbContext _context;
+
+    public ReviewsController(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public ReviewsController(AppDbContext context)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(Review review)
+    {
+        ModelState.Remove("Recipe");
+
+        if (ModelState.IsValid)
         {
-            _context = context;
+            _context.Add(review);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", "Recipes", new { id = review.RecipeId });
         }
 
-        // POST: Reviews/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Content,Rating,RecipeId")] Review review)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(review);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Recipes", new { id = review.RecipeId });
-            }
-
-            return RedirectToAction("Index", "Recipes");
-        }
+        return RedirectToAction("Index", "Recipes");
     }
 }

@@ -1,68 +1,76 @@
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecipeBookMVC.Data;
 using RecipeBookMVC.Models;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace RecipeBookMVC.Controllers;
-
-[Authorize] // Холодильник доступний тільки після входу в акаунт
-public class FridgeController : Controller
+namespace RecipeBookMVC.Controllers
 {
-    private readonly AppDbContext _context;
-
-    public FridgeController(AppDbContext context)
+    public class FridgeController : Controller
     {
-        _context = context;
-    }
+        private readonly AppDbContext _context;
 
-    // Гет-метод: відображає сторінку холодильника з доступними категоріями/інгредієнтами
-    [HttpGet]
-    public async Task<IActionResult> Index()
-    {
-        // Отримуємо всі унікальні категорії для фільтрації або відображення
-        var categories = await _context.Categories.ToListAsync();
-        ViewBag.Categories = categories;
-
-        // Початково показуємо порожній список рецептів, поки користувач нічого не обрав
-        return View(Enumerable.Empty<Recipe>());
-    }
-
-    // Пост-метод: приймає список обраних інгредієнтів з форми та шукає рецепти
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SearchRecipes(string ingredientsInput)
-    {
-        var categories = await _context.Categories.ToListAsync();
-        ViewBag.Categories = categories;
-
-        if (string.IsNullOrWhiteSpace(ingredientsInput))
+        public FridgeController(AppDbContext context)
         {
-            ModelState.AddModelError(string.Empty, "Wpisz lub wybierz co najmniej jeden składnik.");
-            return View("Index", Enumerable.Empty<Recipe>());
+            _context = context;
         }
 
-        // Розбиваємо введені користувачем інгредієнти (через кому) та очищаємо пробіли
-        var userIngredients = ingredientsInput
-            .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(i => i.Trim().ToLower())
-            .ToList();
+        public async Task<IActionResult> Index(List<string> selectedIngredients)
+        {
+            var allRecipes = await _context.Recipes.ToListAsync();
+            var availableIngredients = new List<string>();
 
-        // Завантажуємо всі рецепти з бази даних
-        var allRecipes = await _context.Recipes
-            .Include(r => r.Category)
-            .ToListAsync();
+            foreach (var r in allRecipes)
+            {
+                if (r.Ingredients != null)
+                {
+                    var parts = r.Ingredients.Split(',');
+                    foreach (var p in parts)
+                    {
+                        var cleanPart = p.Trim().ToLower();
+                        if (!availableIngredients.Contains(cleanPart) && cleanPart != "")
+                        {
+                            availableIngredients.Add(cleanPart);
+                        }
+                    }
+                }
+            }
 
-        // Фільтруємо рецепти: залишаємо ті, де інгредієнти з бази містять бодай один інгредієнт користувача
-        var matchedRecipes = allRecipes.Where(r =>
-            userIngredients.Any(ui => r.Ingredients.ToLower().Contains(ui))
-        ).ToList();
+            ViewBag.AvailableIngredients = availableIngredients;
+            ViewBag.SelectedIngredients = selectedIngredients;
 
-        ViewBag.IngredientsQuery = ingredientsInput; // Повертаємо текст назад у поле для зручності
+            var matchedRecipes = new List<Recipe>();
 
-        return View("Index", matchedRecipes);
+            if (selectedIngredients != null && selectedIngredients.Count > 0)
+            {
+                foreach (var r in allRecipes)
+                {
+                    if (r.Ingredients != null)
+                    {
+                        bool hasAll = true;
+                        foreach (var needed in selectedIngredients)
+                        {
+                            if (!r.Ingredients.ToLower().Contains(needed.ToLower()))
+                            {
+                                hasAll = false;
+                                break;
+                            }
+                        }
+                        if (hasAll)
+                        {
+                            matchedRecipes.Add(r);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                matchedRecipes = allRecipes;
+            }
+
+            return View(matchedRecipes);
+        }
     }
 }

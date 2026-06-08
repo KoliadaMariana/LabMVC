@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RecipeBookMVC.Data;
 using RecipeBookMVC.Models;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace RecipeBookMVC.Controllers;
 
@@ -19,37 +21,73 @@ public class RecipesController : Controller
         _userManager = userManager;
     }
 
-    // GET: Recipes
-    public async Task<IActionResult> Index(string searchString, string category)
+    public async Task<IActionResult> Index(string searchString, string category, int? maxTime)
     {
-        var recipesQuery = _context.Recipes
+        var allRecipes = await _context.Recipes
             .Include(r => r.Category)
             .Include(r => r.User)
-            .AsQueryable();
+            .ToListAsync();
 
-        if (!string.IsNullOrEmpty(searchString))
+        var matchedRecipes = new List<Recipe>();
+
+        foreach (var r in allRecipes)
         {
-            recipesQuery = recipesQuery.Where(s => s.Name.ToUpper().Contains(searchString.ToUpper()));
+            bool matchesSearch = true;
+            bool matchesCategory = true;
+            bool matchesTime = true;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                if (r.Name == null || !r.Name.ToLower().Contains(searchString.ToLower()))
+                {
+                    matchesSearch = false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                if (r.Category == null || r.Category.Name != category)
+                {
+                    matchesCategory = false;
+                }
+            }
+
+            if (maxTime.HasValue)
+            {
+                if (r.CookingTime > maxTime.Value)
+                {
+                    matchesTime = false;
+                }
+            }
+
+            if (matchesSearch && matchesCategory && matchesTime)
+            {
+                matchedRecipes.Add(r);
+            }
         }
 
-        if (!string.IsNullOrEmpty(category))
+        var categoriesList = await _context.Categories.ToListAsync();
+        var categoryNames = new List<string>();
+        foreach (var c in categoriesList)
         {
-            recipesQuery = recipesQuery.Where(x => x.Category.Name == category);
+            categoryNames.Add(c.Name);
         }
 
-        ViewData["Categories"] = await _context.Categories.Select(c => c.Name).ToListAsync();
-        return View(await recipesQuery.ToListAsync());
+        ViewData["Categories"] = categoryNames;
+        ViewBag.SelectedCategory = category;
+        ViewBag.SearchString = searchString;
+        ViewBag.MaxTime = maxTime;
+
+        return View(matchedRecipes);
     }
-
-    // GET: Recipes/Create
     [Authorize]
     public async Task<IActionResult> Create()
     {
-        ViewData["CategoryId"] = new SelectList(await _context.Set<Category>().ToListAsync(), "Id", "Name");
+        var categories = await _context.Categories.ToListAsync();
+        ViewData["CategoryId"] = new SelectList(categories, "Id", "Name");
         return View();
     }
 
-    // POST: Recipes/Create
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -62,20 +100,22 @@ public class RecipesController : Controller
         if (ModelState.IsValid)
         {
             recipe.UserId = _userManager.GetUserId(User);
-
             _context.Add(recipe);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
-        ViewData["CategoryId"] = new SelectList(await _context.Set<Category>().ToListAsync(), "Id", "Name", recipe.CategoryId);
+        var categories = await _context.Categories.ToListAsync();
+        ViewData["CategoryId"] = new SelectList(categories, "Id", "Name", recipe.CategoryId);
         return View(recipe);
     }
 
-    // GET: Recipes/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null) return NotFound();
+        if (id == null)
+        {
+            return NotFound();
+        }
 
         var recipe = await _context.Recipes
             .Include(r => r.Category)
@@ -83,46 +123,52 @@ public class RecipesController : Controller
             .Include(r => r.Reviews)
             .FirstOrDefaultAsync(m => m.Id == id);
 
-        if (recipe == null) return NotFound();
+        if (recipe == null)
+        {
+            return NotFound();
+        }
 
         return View(recipe);
     }
 
-    // --- НОВІ МЕТОДИ ДЛЯ БЕЗПЕЧНОГО ВИDАЛЕННЯ ВЛАСНИКОМ ---
-
-    // GET: Recipes/Delete/5
     [Authorize]
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null) return NotFound();
+        if (id == null)
+        {
+            return NotFound();
+        }
 
         var recipe = await _context.Recipes
             .Include(r => r.Category)
             .Include(r => r.User)
             .FirstOrDefaultAsync(m => m.Id == id);
 
-        if (recipe == null) return NotFound();
+        if (recipe == null)
+        {
+            return NotFound();
+        }
 
-        // Перевіряємо, чи є поточний користувач власником цього рецепту
         var currentUserId = _userManager.GetUserId(User);
         if (recipe.UserId != currentUserId)
         {
-            return Forbid(); // Якщо чужий рецепт — показуємо помилку доступу (Access Denied)
+            return Forbid();
         }
 
         return View(recipe);
     }
 
-    // POST: Recipes/Delete/5
     [Authorize]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var recipe = await _context.Recipes.FindAsync(id);
-        if (recipe == null) return NotFound();
+        if (recipe == null)
+        {
+            return NotFound();
+        }
 
-        // Захисна перевірка безпосередньо перед видаленням з бази даних
         var currentUserId = _userManager.GetUserId(User);
         if (recipe.UserId != currentUserId)
         {
@@ -131,6 +177,6 @@ public class RecipesController : Controller
 
         _context.Recipes.Remove(recipe);
         await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction("Index");
     }
 }

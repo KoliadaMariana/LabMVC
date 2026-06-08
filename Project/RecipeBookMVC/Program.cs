@@ -7,14 +7,11 @@ using System.Collections.Generic;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. ПІDТРИМКА MVC
 builder.Services.AddControllersWithViews();
 
-// 2. БД SQLITE
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 3. НАЛАШТУВАННЯ IDENTITY
 builder.Services.AddIdentity<ApplicationUser, Microsoft.AspNetCore.Identity.IdentityRole>(options =>
 {
     options.Password.RequireDigit = false;
@@ -26,7 +23,6 @@ builder.Services.AddIdentity<ApplicationUser, Microsoft.AspNetCore.Identity.Iden
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// 4. НАЛАШТУВАННЯ КУКІВ
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -53,7 +49,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// 5. SEED DATA - ВИПРАВЛЕНО ТИП DATETIME
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -83,9 +78,9 @@ using (var scope = app.Services.CreateScope())
 
     var recipe1 = new Recipe
     {
-        Name = "Kurczak Curry",
-        Ingredients = "Kurczak, ryż, mleczko kokosowe, curry",
-        Instructions = "Podsmaż kurczaka, dodaj curry i mleczko. Gotuj 15 min.",
+        Name = "Kurczak Curry z Ryżem",
+        Ingredients = "Kurczak, ryż basmati, mleczko kokosowe, pasta curry, cebula, czosnek, olej, sól, pieprz",
+        Instructions = "Ugotuj ryż basmati według instrukcji na opakowaniu. Na patelni rozgrzej olej, podsmaż posiekaną cebulę i czosnek. Dodaj pokrojonego w kostkę kurczaka, dopraw solą oraz pieprzem i smaż do złocistego koloru. Następnie dodaj łyżkę pasty curry, wymieszaj i wlej mleczko kokosowe. Całość gulaszu duś na małym ogniu przez około 15 minut, aż sos ładnie zgęstnieje. Podawaj gorące z ryżem.",
         CookingTime = 30,
         Difficulty = "Łatwe",
         CategoryId = obiady.Id,
@@ -95,9 +90,9 @@ using (var scope = app.Services.CreateScope())
 
     var recipe2 = new Recipe
     {
-        Name = "Puszyste Brownie",
-        Ingredients = "Czekolada, masło, jajka, mąka",
-        Instructions = "Rozpuść czekoladę, dodaj resztę. Piecz 25 min.",
+        Name = "Puszyste Brownie Czekoladowe",
+        Ingredients = "Czekolada gorzka, masło, jajka, mąka pszenna, cukier, proszek do pieczenia",
+        Instructions = "W małym garnuszku rozpuść masło razem z połamaną gorzką czekoladą na małym ogniu, stale mieszając, a następnie odstaw do wystygnięcia. W osobnej misce ubij mikserem jajka z cukrem na puszystą masę. Powoli wlej przestudzoną czekoladę do ubitych jajek. Na koniec wsyp przesianą mąkę z odrobiną proszku do pieczenia i delikatnie wymieszaj łyżką. Przelej ciasto do formy i piecz w piekarniku nagrzanym do 180 stopni przez 25 minut.",
         CookingTime = 45,
         Difficulty = "Średnie",
         CategoryId = desery.Id,
@@ -107,9 +102,9 @@ using (var scope = app.Services.CreateScope())
 
     var recipe3 = new Recipe
     {
-        Name = "Zupa Pomidorowa",
-        Ingredients = "Pomidory, bulion, makaron, śmietana",
-        Instructions = "Gotuj bulion z pomidorami, zabiel śmietaną.",
+        Name = "Domowa Zupa Pomidorowa",
+        Ingredients = "Pomidory w puszce, bulion warzywny, makaron, śmietana 18%, marchewka, pietruszka, sól, pieprz",
+        Instructions = "Do garnka wlej bulion warzywny, dodaj pokrojoną w kostkę marchewkę oraz pietruszkę i gotuj do miękkości. Następnie dodaj zblendowane pomidory z puszki i gotuj całość przez kolejne 10 minut. W osobnym garnku ugotuj ulubiony makaron. Pod koniec gotowania zupy, zahartuj śmietanę odrobiną gorącego wywaru, wlej do garnka i dokładnie wymieszaj. Dopraw solą oraz pieprzem. Podawaj z makaronem.",
         CookingTime = 40,
         Difficulty = "Bardzo łatwe",
         CategoryId = zupy.Id,
@@ -117,15 +112,64 @@ using (var scope = app.Services.CreateScope())
         ImageUrl = "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800"
     };
 
-    context.Recipes.AddRange(recipe1, recipe2, recipe3);
+    var recipe4 = new Recipe
+    {
+        Name = "Puszyste Naleśniki z Twarogiem",
+        Ingredients = "Mąka pszenna, mleko, jajka, woda gazowana, twaróg, cukier waniliowy, masło",
+        Instructions = "W misce wymieszaj mąkę, mleko, jajka oraz wodę gazowaną na gładkie ciasto bez grudek. Smaż cienkie naleśniki na dobrze rozgrzanej patelni z odrobiną masła z obu stron na złoty kolor. Twaróg rozgnieć widelcem i wymieszaj z cukrem waniliowym. Nakładaj przygotowany farsz serowy na każdy naleśnik, zwiń w rulon lub trójkąty i podawaj.",
+        CookingTime = 25,
+        Difficulty = "Łatwe",
+        CategoryId = sniadania.Id,
+        UserId = adminUser.Id,
+        ImageUrl = "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800"
+    };
+
+    var recipe5 = new Recipe
+    {
+        Name = "Orzeźwiająca Lemoniada Cytrynowa",
+        Ingredients = "Cytryna, woda, miód, mięta, lód",
+        Instructions = "Wyciśnij świeży sok z kilku cytryn i wlej go do dużego dzbanka. Dodaj kilka łyżek płynnego miodu i dokładnie wymieszaj, aż miód całkowicie się rozpuści. Następnie wlej zimną wodę mineralną. Wrzuć umyte listki świeżej miętą oraz plasterki cytryny dla ozdoby. Przed podaniem dodaj kostki lodu, aby napój był mocno schłodzony.",
+        CookingTime = 10,
+        Difficulty = "Bardzo łatwe",
+        CategoryId = napoje.Id,
+        UserId = adminUser.Id,
+        ImageUrl = "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=800"
+    };
+
+    var recipe6 = new Recipe
+    {
+        Name = "Klasyczna Jajecznica ze Szczypiorkiem",
+        Ingredients = "Jajka, masło, szczypiorek, sól, pieprz",
+        Instructions = "Na patelni rozpuść łyżeczkę masła na małym ogniu. Wbij jajka bezpośrednio na patelnię lub roztrzep je wcześniej w miseczce. Smaż powoli, delikatnie mieszając drewnianą łopatką, aż jajka osiągną idealną для Ciebie konsystencję. Na sam koniec wyłącz ogień, dopraw jajecznicę solą, pieprzem i posyp obficie świeżo posiekaným szczypiorkiem.",
+        CookingTime = 10,
+        Difficulty = "Bardzo łatwe",
+        CategoryId = sniadania.Id,
+        UserId = adminUser.Id,
+        ImageUrl = "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800"
+    };
+
+    var recipe7 = new Recipe
+    {
+        Name = "Włoski Makaron Carbonara",
+        Ingredients = "Makaron spaghetti, boczek, jajka, parmezan, czosnek, sól, pieprz",
+        Instructions = "Ugotuj makaron spaghetti al dente w osolonej wodzie. W międzyczasie na suchej patelni podsmaż pokrojony w kostkę boczek z całym ząbkiem czosnku, który potem wyjmiesz. W miseczce wymieszaj żółtka jajek z drobno startym parmezanem i dużą ilością pieprzu. Wrzuć gorący makaron bezpośrednio na patelnię z boczkiem, zdejmij z ognia, wlej masę jajeczną i szybko wymieszaj, tworząc kremowy sos.",
+        CookingTime = 20,
+        Difficulty = "Średnie",
+        CategoryId = obiady.Id,
+        UserId = adminUser.Id,
+        ImageUrl = "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800"
+    };
+
+    context.Recipes.AddRange(recipe1, recipe2, recipe3, recipe4, recipe5, recipe6, recipe7);
     await context.SaveChangesAsync();
 
-    // Тут тепер передається чистий DateTime.Now замість тексту
     var reviews = new List<Review>
     {
         new Review { Content = "Pyszne danie! Polecam wszystkim.", Rating = 5, CreatedAt = DateTime.Now, RecipeId = recipe1.Id },
         new Review { Content = "Trochę za słodkie, ale ogólnie super.", Rating = 4, CreatedAt = DateTime.Now, RecipeId = recipe2.Id },
-        new Review { Content = "Klasyczny smak, idealna na obiad.", Rating = 5, CreatedAt = DateTime.Now, RecipeId = recipe3.Id }
+        new Review { Content = "Klasyczny smak, idealna na obiad.", Rating = 5, CreatedAt = DateTime.Now, RecipeId = recipe3.Id },
+        new Review { Content = "Super śniadanie, dzieciaki zjadły ze smakiem!", Rating = 5, CreatedAt = DateTime.Now, RecipeId = recipe4.Id },
+        new Review { Content = "Bardzo dobrze chłodzi w upalne dni.", Rating = 5, CreatedAt = DateTime.Now, RecipeId = recipe5.Id }
     };
 
     context.Reviews.AddRange(reviews);

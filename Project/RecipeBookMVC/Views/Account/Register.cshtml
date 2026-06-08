@@ -37,8 +37,16 @@
 
                             <div class="mb-4">
                                 <label class="form-label" style="color: #5C4033; font-weight: 500;">Hasło</label>
-                                <input name="password" type="password" class="form-control"
-                                       style="border-color: #D4A373; background-color: #FFF;" required />
+                                <div class="position-relative">
+                                    <input type="password" name="password" id="passwordInput" class="form-control"
+                                           style="border-color: #D4A373; background-color: #FFF; padding-right: 40px;"
+                                           required />
+                                    <button type="button" id="togglePassword"
+                                            class="btn btn-sm position-absolute end-0 top-50 translate-middle-y me-2"
+                                            style="background: none; border: none; z-index: 10;">
+                                        👁️
+                                    </button>
+                                </div>
                             </div>
 
                             <button type="submit" class="btn w-100 text-white fw-bold py-2"
@@ -56,3 +64,16 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            document.getElementById('togglePassword').addEventListener('click', function () {
+                var passwordInput = document.getElementById('passwordInput');
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.textContent = '🙈';
+                } else {
+                    passwordInput.type = 'password';
+                    this.textContent = '👁️';
+                }
+            });
+        </script>

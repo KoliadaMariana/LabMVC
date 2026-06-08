@@ -4,12 +4,10 @@
 
 @{
     ViewData["Title"] = "Przepisy";
-    // Отримуємо ID поточного користувача один раз на початку сторінки
     var currentUserId = UserManager.GetUserId(User);
 }
 
 <div class="container mt-4">
-    @* Блок із заголовком та кнопкою додавання *@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fw-bold" style="color: #3E2723; margin: 0;">📖 Książka Kucharska</h1>
 
@@ -19,22 +17,22 @@
         </a>
     </div>
 
-    @* Панель фільтрації (бежева, з шоколадною кнопкою) *@
     <div class="card shadow-sm border-0 mb-5 p-4"
          style="background-color: #F9F3EB; border: 1px solid #E3D5C8 !important; border-radius: 15px;">
         <form asp-action="Index" method="get" class="row g-3">
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <label class="form-label fw-bold" style="color: #3E2723;">Szukaj po nazwie</label>
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0" style="border-radius: 8px 0 0 8px;">
                         <i class="bi bi-search"></i>
                     </span>
                     <input type="text" name="searchString" class="form-control border-start-0"
-                           style="border-radius: 0 8px 8px 0;" placeholder="np. Kurczak, Brownie..." />
+                           style="border-radius: 0 8px 8px 0;" placeholder="np. Kurczak, Brownie..."
+                           value="@ViewBag.SearchString" />
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="form-label fw-bold" style="color: #3E2723;">Kategoria</label>
                 <select name="category" class="form-select" style="border-radius: 8px;">
                     <option value="">Wszystkie kategorie</option>
@@ -42,24 +40,45 @@
                     {
                         @foreach (var cat in (List<string>)ViewData["Categories"]!)
                         {
-                            <option value="@cat">@cat</option>
+                            if (cat == ViewBag.SelectedCategory)
+                            {
+                                <option value="@cat" selected="selected">@cat</option>
+                            }
+                            else
+                            {
+                                <option value="@cat">@cat</option>
+                            }
                         }
                     }
                 </select>
             </div>
 
+            <div class="col-md-2">
+                <label class="form-label fw-bold" style="color: #3E2723;">Maks. czas</label>
+                <select name="maxTime" class="form-select" style="border-radius: 8px;">
+                    <option value="">Dowolny</option>
+                    <option value="15" selected="@(ViewBag.MaxTime?.ToString() == "15" ? "selected" : null)">do 15 min
+                    </option>
+                    <option value="30" selected="@(ViewBag.MaxTime?.ToString() == "30" ? "selected" : null)">do 30 min
+                    </option>
+                    <option value="45" selected="@(ViewBag.MaxTime?.ToString() == "45" ? "selected" : null)">do 45 min
+                    </option>
+                    <option value="60" selected="@(ViewBag.MaxTime?.ToString() == "60" ? "selected" : null)">do 60 min
+                    </option>
+                </select>
+            </div>
+
             <div class="col-md-3 d-flex align-items-end gap-2">
                 <button type="submit" class="btn w-100 fw-bold"
-                        style="background-color: #3E2723; color: white; border-radius: 8px; border: none;">
+                        style="background-color: #3E2723; color: white; border-radius: 8px; border: none; height: 38px;">
                     Filtruj
                 </button>
                 <a asp-action="Index" class="btn btn-outline-dark"
-                   style="border-radius: 8px; border-color: #3E2723; color: #3E2723;">Reset</a>
+                   style="border-radius: 8px; border-color: #3E2723; color: #3E2723; height: 38px; display: inline-flex; align-items: center; justify-content: center;">Reset</a>
             </div>
         </form>
     </div>
 
-    @* Сітка з картками рецептів *@
     <div class="row g-4">
         @foreach (var item in Model)
         {
@@ -94,7 +113,6 @@
                                     Zobacz przepis
                                 </a>
 
-                                @* КНОПКА ВИДАЛЕННЯ: показується тільки якщо поточний користувач є автором *@
                                 @if (item.UserId == currentUserId && !string.IsNullOrEmpty(currentUserId))
                                 {
                                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger px-3"

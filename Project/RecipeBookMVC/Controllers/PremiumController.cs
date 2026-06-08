@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RecipeBookMVC.Controllers;
 
-[Authorize] // Доступно тільки для зареєстрованих користувачів
+[Authorize]
 public class PremiumController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;

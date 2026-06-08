@@ -87,45 +87,6 @@
                             </div>
                         </div>
                     </div>
-
-                    @* Панель фільтрації *@
-                    <div class="mt-5 p-4 rounded-4 shadow-sm" style="background-color: #F9F3EB; border: 1px solid #E3D5C8;">
-                        <h4 class="mb-4 fw-bold" style="color: #3E2723;">🔍 Znajdź idealny przepis</h4>
-                        <form asp-controller="Home" asp-action="Index" method="get" class="row g-3">
-                            <div class="col-md-5">
-                                <label class="form-label fw-semibold" style="color: #3E2723;">Nazwa dania</label>
-                                <input type="text" name="searchString" class="form-control border-0 shadow-sm"
-                                       style="border-radius: 8px; padding: 10px;" placeholder="np. Kurczak, Brownie..." />
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold" style="color: #3E2723;">Kategoria</label>
-                                <select name="category" class="form-select border-0 shadow-sm"
-                                        style="border-radius: 8px; padding: 10px;">
-                                    <option value="">Wszystkie kategorie</option>
-                                    @if (ViewData["Categories"] != null)
-                                    {
-                                        @foreach (var cat in (List<string>)ViewData["Categories"]!)
-                                        {
-                                            <option value="@cat">@cat</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-
-                            <div class="col-md-3 d-flex align-items-end gap-2">
-                                <button type="submit" class="btn fw-bold w-100 shadow-sm"
-                                        style="background-color: #3E2723; color: white; border-radius: 8px; padding: 10px;">
-                                    Filtruj
-                                </button>
-                                <a asp-action="Index" class="btn btn-outline-dark shadow-sm"
-                                   style="border-radius: 8px; padding: 10px; border-color: #3E2723; color: #3E2723;">
-                                    Reset
-                                </a>
-                            </div>
-                        </form>
-                    </div>
-
                     @* Картки переваг *@
                     <div class="row mt-5 g-4 text-center">
                         <div class="col-md-4">
