@@ -57,11 +57,22 @@
 
                     <ul class="navbar-nav gap-3 align-items-center">
                         <li class="nav-item">
-                            <a class="btn btn-sm px-3 text-white fw-bold"
-                               style="background-color: #E28743; border-radius: 20px; border: none;"
-                               asp-controller="Premium" asp-action="Index">
-                                <i class="bi bi-crown-fill me-1"></i> Premium
-                            </a>
+                            @if (hasPremium)
+                            {
+                                <span class="badge fs-6 px-3 py-2"
+                                      style="background-color:#FFD700;color:#3E2723;border-radius:20px;">
+                                    <i class="bi bi-patch-check-fill"></i>
+                                    Premium Active
+                                </span>
+                            }
+                            else
+                            {
+                                <a class="btn btn-sm px-3 text-white fw-bold"
+                                   style="background-color: #E28743; border-radius: 20px; border: none;"
+                                   asp-controller="Premium" asp-action="Index">
+                                    <i class="bi bi-crown-fill me-1"></i> Premium
+                                </a>
+                            }
                         </li>
                         <partial name="_LoginPartial" />
                     </ul>

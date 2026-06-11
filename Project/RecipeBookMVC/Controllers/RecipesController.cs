@@ -7,6 +7,7 @@ using RecipeBookMVC.Data;
 using RecipeBookMVC.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RecipeBookMVC.Controllers;
 
@@ -130,6 +131,88 @@ public class RecipesController : Controller
 
         return View(recipe);
     }
+    [Authorize]
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var recipe = await _context.Recipes.FindAsync(id);
+
+        if (recipe == null)
+        {
+            return NotFound();
+        }
+
+        var currentUserId = _userManager.GetUserId(User);
+
+        if (recipe.UserId != currentUserId)
+        {
+            return Forbid();
+        }
+
+        var categories = await _context.Categories.ToListAsync();
+
+        ViewData["CategoryId"] = new SelectList(
+            categories,
+            "Id",
+            "Name",
+            recipe.CategoryId);
+
+        return View(recipe);
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, Recipe recipe)
+    {
+        if (id != recipe.Id)
+        {
+            return NotFound();
+        }
+
+        ModelState.Remove("User");
+        ModelState.Remove("Category");
+
+        if (ModelState.IsValid)
+        {
+            var existingRecipe = await _context.Recipes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (existingRecipe == null)
+            {
+                return NotFound();
+            }
+
+            var currentUserId = _userManager.GetUserId(User);
+
+            if (existingRecipe.UserId != currentUserId)
+            {
+                return Forbid();
+            }
+
+            recipe.UserId = existingRecipe.UserId;
+
+            _context.Update(recipe);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        var categories = await _context.Categories.ToListAsync();
+
+        ViewData["CategoryId"] = new SelectList(
+            categories,
+            "Id",
+            "Name",
+            recipe.CategoryId);
+
+        return View(recipe);
+    }
 
     [Authorize]
     public async Task<IActionResult> Delete(int? id)
@@ -161,6 +244,19 @@ public class RecipesController : Controller
     [Authorize]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize]
+    public async Task<IActionResult> MyRecipes()
+    {
+        var currentUserId = _userManager.GetUserId(User);
+
+        var recipes = await _context.Recipes
+            .Include(r => r.Category)
+            .Include(r => r.Reviews)
+            .Where(r => r.UserId == currentUserId)
+            .ToListAsync();
+
+        return View(recipes);
+    }
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var recipe = await _context.Recipes.FindAsync(id);

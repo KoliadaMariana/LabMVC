@@ -115,8 +115,13 @@
 
                                 @if (item.UserId == currentUserId && !string.IsNullOrEmpty(currentUserId))
                                 {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary px-3"
+                                       style="border-radius: 8px;">
+                                        <i class="bi bi-pencil"></i> Edytuj
+                                    </a>
+
                                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger px-3"
-                                       style="border-radius: 8px; font-weight: 500;">
+                                       style="border-radius: 8px;">
                                         <i class="bi bi-trash"></i> Usuń
                                     </a>
                                 }

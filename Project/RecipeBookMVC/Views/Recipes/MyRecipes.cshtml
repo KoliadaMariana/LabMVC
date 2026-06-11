@@ -1,0 +1,72 @@
+@model IEnumerable<RecipeBookMVC.Models.Recipe>
+
+@{
+    ViewData["Title"] = "Moje Przepisy";
+}
+
+<div class="container mt-4">
+
+    <h2 class="fw-bold mb-4" style="color:#3E2723;">
+        👨‍🍳 Moje Przepisy
+    </h2>
+
+    <div class="row g-4">
+
+        @foreach (var recipe in Model)
+        {
+            double avgRating = 0;
+
+            if (recipe.Reviews != null && recipe.Reviews.Any())
+            {
+                avgRating = recipe.Reviews.Average(r => r.Rating);
+            }
+
+            <div class="col-md-4">
+
+                <div class="card h-100 shadow-sm border-0">
+
+                    @if (!string.IsNullOrEmpty(recipe.ImageUrl))
+                    {
+                        <img src="@recipe.ImageUrl" class="card-img-top" style="height:220px;object-fit:cover;">
+                    }
+
+                    <div class="card-body">
+
+                        <h5 class="fw-bold">
+                            @recipe.Name
+                        </h5>
+
+                        <p class="text-muted">
+                            @recipe.Category?.Name
+                        </p>
+
+                        <p>
+                            ⏱ @recipe.CookingTime min
+                        </p>
+
+                        <p class="fw-bold text-warning">
+                            ⭐ @avgRating.ToString("0.0") / 5
+                        </p>
+
+                        <div class="d-flex gap-2">
+
+                            <a asp-action="Details" asp-route-id="@recipe.Id" class="btn btn-outline-dark btn-sm">
+                                Szczegóły
+                            </a>
+
+                            <a asp-action="Edit" asp-route-id="@recipe.Id" class="btn btn-warning btn-sm">
+                                Edytuj
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

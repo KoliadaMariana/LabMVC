@@ -1,0 +1,85 @@
+@model IEnumerable<RecipeBookMVC.Models.Recipe>
+
+@{
+    ViewData["Title"] = "Mój Profil";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body p-4">
+
+            <h2 class="fw-bold mb-4">Mój Profil</h2>
+
+            <div class="row text-center">
+
+                <div class="col-md-4">
+                    <div class="p-3 rounded bg-light">
+                        <h3>@ViewBag.RecipesCount</h3>
+                        <p class="mb-0">Liczba przepisów</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 rounded bg-light">
+                        <h3>@Math.Round((double)ViewBag.AverageRating, 1)</h3>
+                        <p class="mb-0">Średnia ocena</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 rounded bg-light">
+
+                        @if ((bool)ViewBag.IsPremium)
+                        {
+                            <h3 class="text-warning">
+                                <i class="bi bi-patch-check-fill"></i>
+                            </h3>
+                            <p class="mb-0">Premium Aktywny</p>
+                        }
+                        else
+                        {
+                            <h3>—</h3>
+                            <p class="mb-0">Brak Premium</p>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+
+            <h4 class="mb-3">Moje przepisy</h4>
+
+            @if (!Model.Any())
+            {
+                <p>Nie masz jeszcze żadnych przepisów.</p>
+            }
+            else
+            {
+                <div class="list-group">
+
+                    @foreach (var recipe in Model)
+                    {
+                        <a asp-controller="Recipes" asp-action="Details" asp-route-id="@recipe.Id"
+                           class="list-group-item list-group-item-action">
+
+                            <div class="d-flex justify-content-between">
+                                <strong>@recipe.Name</strong>
+                                <span>@recipe.CookingTime min</span>
+                            </div>
+
+                        </a>
+                    }
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
